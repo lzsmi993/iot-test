@@ -1,0 +1,38 @@
+# ============================================
+# IoT Platform - Docker Compose
+# 使用已有的 MySQL 容器，只构建 backend + frontend
+# ============================================
+
+version: "3.8"
+
+services:
+  # ---- 后端服务 ----
+  backend:
+    build:
+      context: ../../backend
+      dockerfile: Dockerfile
+    container_name: iot-backend
+    restart: unless-stopped
+    environment:
+      DB_HOST: host.docker.internal
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASS: "123456"
+      SERVER_PORT: 8080
+      TZ: Asia/Shanghai
+    ports:
+      - "8081:8080"
+
+  # ---- 前端服务 ----
+  frontend:
+    build:
+      context: ../../frontend
+      dockerfile: Dockerfile
+    container_name: iot-frontend
+    restart: unless-stopped
+    environment:
+      TZ: Asia/Shanghai
+    ports:
+      - "8088:80"
+    depends_on:
+      - backend
