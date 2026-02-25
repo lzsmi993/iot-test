@@ -5,28 +5,22 @@
   - 订单列表查询 (分页/筛选)
   - 订单详情查询
   - 订单状态更新
+  - 仓库列表
 """
-import pytest
 import requests
 
-BASE_URL = "http://localhost:8081"
-
-
-@pytest.fixture
-def api_base():
-    return BASE_URL
+BASE_URL = "http://freight-backend:8080"
+FRONTEND_URL = "http://freight-frontend:80"
 
 
 class TestHealthCheck:
 
-    @pytest.mark.smoke
     def test_backend_reachable(self):
         resp = requests.get(f"{BASE_URL}/api/order/list", timeout=10)
         assert resp.status_code == 200
 
-    @pytest.mark.smoke
     def test_frontend_reachable(self):
-        resp = requests.get("http://localhost:8088/", timeout=10)
+        resp = requests.get(f"{FRONTEND_URL}/", timeout=10)
         assert resp.status_code == 200
 
 
