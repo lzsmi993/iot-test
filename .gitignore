@@ -1,3 +1,11 @@
+# Java
+backend/target/
+*.class
+
+# Node
+frontend/node_modules/
+frontend/dist/
+
 # IDE
 .idea/
 *.iml
