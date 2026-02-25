@@ -41,6 +41,7 @@ class TestOrderList:
 
     def test_filter_by_status(self):
         resp = requests.get(f"{BASE_URL}/api/order/list", params={"status": "PENDING"})
+        assert resp.status_code == 200
         data = resp.json()
         assert data["code"] == 200
         for order in data["data"]["list"]:
