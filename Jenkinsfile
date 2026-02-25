@@ -8,8 +8,8 @@ pipeline {
         DB_USER     = 'root'
         DB_PASS     = '123456'
         // Docker 镜像
-        BACKEND_IMAGE  = 'iot-platform-backend'
-        FRONTEND_IMAGE = 'iot-platform-frontend'
+        BACKEND_IMAGE  = 'freight-backend'
+        FRONTEND_IMAGE = 'freight-frontend'
         IMAGE_TAG      = "${BUILD_NUMBER}"
     }
 
@@ -69,13 +69,13 @@ pipeline {
                 script {
                     // 停掉旧容器
                     sh '''
-                        docker stop iot-backend iot-frontend 2>/dev/null || true
-                        docker rm iot-backend iot-frontend 2>/dev/null || true
+                        docker stop freight-backend freight-frontend 2>/dev/null || true
+                        docker rm freight-backend freight-frontend 2>/dev/null || true
                     '''
 
                     // 启动后端
                     sh """
-                        docker run -d --name iot-backend \
+                        docker run -d --name freight-backend \
                             -e DB_HOST=${DB_HOST} \
                             -e DB_PORT=${DB_PORT} \
                             -e DB_USER=${DB_USER} \
@@ -90,8 +90,8 @@ pipeline {
 
                     // 启动前端
                     sh """
-                        docker run -d --name iot-frontend \
-                            --link iot-backend:iot-backend \
+                        docker run -d --name freight-frontend \
+                            --link freight-backend:freight-backend \
                             -p 8088:80 \
                             --restart unless-stopped \
                             ${FRONTEND_IMAGE}:${IMAGE_TAG}
@@ -108,7 +108,7 @@ pipeline {
 
                     // 检查后端 API
                     def backendStatus = sh(
-                        script: "curl -s -o /dev/null -w '%{http_code}' http://localhost:8081/api/v1/login-logs",
+                        script: "curl -s -o /dev/null -w '%{http_code}' http://localhost:8081/api/order/list",
                         returnStdout: true
                     ).trim()
                     echo "后端 API 状态码: ${backendStatus}"
@@ -140,7 +140,7 @@ pipeline {
             ✅ 部署成功!
             ━━━━━━━━━━━━━━━━━━━━━━━
             前端: http://localhost:8088
-            后端: http://localhost:8081/api/v1/login-logs
+            后端: http://localhost:8081/api/order/list
             镜像: ${BACKEND_IMAGE}:${IMAGE_TAG}, ${FRONTEND_IMAGE}:${IMAGE_TAG}
             ━━━━━━━━━━━━━━━━━━━━━━━
             """
