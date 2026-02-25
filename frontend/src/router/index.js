@@ -7,13 +7,7 @@ const routes = [
   { path: '/', redirect: '/order/list' },
   { path: '/order/list', component: OrderList },
   { path: '/order/create', component: CreateOrder },
-  { path: '/order/detail/:id', component: OrderDetail },
-  {
-    path: '/system/login-log',
-    name: 'LoginLog',
-    component: () => import('@/views/system/login-log/index.vue'),
-    meta: { title: '登录日志' }
-  }
+  { path: '/order/detail/:id', component: OrderDetail }
 ];
 
 const router = createRouter({
